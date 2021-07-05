@@ -32,10 +32,32 @@ public class Game extends JFrame {
         panel = new JPanel();
         panel.setBorder(BorderFactory.createLineBorder(Color.gray));
         panel.setLayout(new GridLayout(4,3));
+        try {
+            source = loadImage();
+            int h = getNewHeight(source.getWidth(), source.getHeight());
+            resized = resizeImage(source, DESIRED_WIDTH, h, BufferedImage.TYPE_INT_ARGB);
+
+        } catch (IOException ex) {
+            System.err.println("Problem this source image " + ex);
+        }
+    }
+
+    public BufferedImage resizeImage (BufferedImage originImage, int width, int height, int type) {
+        BufferedImage resizedImage = new BufferedImage(width, height, type);
+        Graphics2D g = resizedImage.createGraphics();
+        g.drawImage(originImage, 0, 0, width, height, null);
+        g.dispose();
+        return resizedImage;
     }
 
     public BufferedImage loadImage() throws IOException {
         BufferedImage bimg = ImageIO.read(new File("scale_1200.jpg"));
         return bimg;
+    }
+
+    public int getNewHeight (int w, int h) {
+        double ratio = DESIRED_WIDTH / (double) w;
+        int newHeight = (int) (h * ratio);
+        return newHeight;
     }
 }
